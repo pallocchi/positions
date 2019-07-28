@@ -1,17 +1,33 @@
 package com.github.pallocchi.positions.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "position")
 public class Position {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "external_id")
     private String externalId;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "company")
     private String company;
 
+    @Column(name = "type")
     private String type;
 
+    @Column(name = "location")
     private String location;
 
     public Long getId() {

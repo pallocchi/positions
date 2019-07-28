@@ -1,4 +1,4 @@
-package com.github.pallocchi.positions.controller;
+package com.github.pallocchi.positions.controllers;
 
 import com.github.pallocchi.positions.model.Position;
 import io.swagger.annotations.Api;
