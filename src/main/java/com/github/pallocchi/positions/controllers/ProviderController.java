@@ -25,11 +25,11 @@ import java.util.List;
 @Api(tags = {"Providers"})
 public class ProviderController {
 
-    private final ProviderRepository repository;
+    private final ProviderRepository providerRepository;
 
     @Autowired
-    public ProviderController(ProviderRepository repository) {
-        this.repository = repository;
+    public ProviderController(ProviderRepository providerRepository) {
+        this.providerRepository = providerRepository;
     }
 
     @GetMapping("/providers")
@@ -38,7 +38,7 @@ public class ProviderController {
         @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
         @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(100) int size) {
 
-        return repository.findAll(PageRequest.of(page, size)).getContent();
+        return providerRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 
     @PostMapping("/providers")
@@ -46,7 +46,7 @@ public class ProviderController {
     public void createProvider(
         @RequestBody @Valid Provider provider) {
 
-        repository.save(provider);
+        providerRepository.save(provider);
     }
 
     @PutMapping("/providers/{id}")
@@ -55,7 +55,7 @@ public class ProviderController {
         @PathVariable(value = "id") int id,
         @RequestBody Provider provider) {
 
-        repository.update(id, provider);
+        providerRepository.update(id, provider);
     }
 
 }

@@ -39,7 +39,7 @@ public class ProviderControllerTest {
     private ObjectMapper om;
 
     @MockBean
-    private ProviderRepository repository;
+    private ProviderRepository providerRepository;
 
     @Test
     public void getProvidersShouldReturn2xx() throws Exception {
@@ -48,7 +48,7 @@ public class ProviderControllerTest {
 
         final Pageable pageable = PageRequest.of(0, 10);
 
-        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(singletonList(provider)));
+        when(providerRepository.findAll(pageable)).thenReturn(new PageImpl<>(singletonList(provider)));
 
         mvc.perform(MockMvcRequestBuilders
             .get("/providers")
@@ -60,8 +60,8 @@ public class ProviderControllerTest {
             .andExpect(jsonPath("$[0].name", is(provider.getName())))
             .andExpect(jsonPath("$[0].url", is(provider.getUrl())));
 
-        verify(repository, times(1)).findAll(pageable);
-        verifyNoMoreInteractions(repository);
+        verify(providerRepository, times(1)).findAll(pageable);
+        verifyNoMoreInteractions(providerRepository);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ProviderControllerTest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is4xxClientError());
 
-        verify(repository, never()).findAll();
+        verify(providerRepository, never()).findAll();
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ProviderControllerTest {
         final Provider provider = newProvider();
         provider.setId(null);
 
-        when(repository.save(provider)).thenReturn(provider);
+        when(providerRepository.save(provider)).thenReturn(provider);
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
@@ -90,7 +90,7 @@ public class ProviderControllerTest {
             .content(om.writeValueAsString(provider)))
             .andExpect(status().isOk());
 
-        verify(repository, times(1)).save(provider);
+        verify(providerRepository, times(1)).save(provider);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ProviderControllerTest {
             .content(om.writeValueAsString(provider)))
             .andExpect(status().is4xxClientError());
 
-        verify(repository, never()).save(any());
+        verify(providerRepository, never()).save(any());
     }
 
     @Test
@@ -114,8 +114,6 @@ public class ProviderControllerTest {
         final Provider provider = newProvider();
         provider.setUrl(null);
 
-        when(repository.save(provider)).thenReturn(provider);
-
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
             .param("size", "101")
@@ -123,7 +121,7 @@ public class ProviderControllerTest {
             .content(om.writeValueAsString(provider)))
             .andExpect(status().is4xxClientError());
 
-        verify(repository, never()).save(any());
+        verify(providerRepository, never()).save(any());
     }
 
     @Test
@@ -132,7 +130,7 @@ public class ProviderControllerTest {
         final Provider provider = newProvider();
         provider.setMaxPositions(null);
 
-        when(repository.save(provider)).thenReturn(provider);
+        when(providerRepository.save(provider)).thenReturn(provider);
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
@@ -141,7 +139,7 @@ public class ProviderControllerTest {
             .content(om.writeValueAsString(provider)))
             .andExpect(status().is4xxClientError());
 
-        verify(repository, never()).save(any());
+        verify(providerRepository, never()).save(any());
     }
 
     @Test
@@ -149,15 +147,13 @@ public class ProviderControllerTest {
 
         final Provider provider = newProvider();
 
-        when(repository.save(provider)).thenReturn(provider);
-
         mvc.perform(MockMvcRequestBuilders
             .put("/providers/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
             .andExpect(status().isOk());
 
-        verify(repository, times(1)).update(provider.getId(), provider);
+        verify(providerRepository, times(1)).update(provider.getId(), provider);
     }
 
     private Provider newProvider() {

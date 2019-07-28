@@ -12,7 +12,7 @@ import javax.persistence.EntityNotFoundException;
  * @author Pablo Pallocchi
  */
 @NoRepositoryBean
-public interface PartialUpdateRepository<T, ID> extends CrudRepository<T, ID> {
+interface PartialUpdateRepository<T, ID> extends CrudRepository<T, ID> {
 
     /**
      * Updates an existing entity, which must exists in the database.

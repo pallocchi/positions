@@ -1,28 +1,39 @@
 package com.github.pallocchi.positions.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "client")
+@ApiModel(description = "The client who use the open positions of our providers")
 public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ApiModelProperty("The client id")
     private Integer id;
 
+    @NotNull
     @Column(name = "name")
+    @ApiModelProperty("The client name")
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "hunt_id")
-    private Hunt hunt;
+    @JsonIgnore
+    @OneToMany(mappedBy = "client")
+    @ApiModelProperty("The active hunt")
+    private List<Hunt> hunts;
 
     public Integer getId() {
         return id;
@@ -40,12 +51,26 @@ public class Client {
         this.name = name;
     }
 
-    public Hunt getHunt() {
-        return hunt;
+    public List<Hunt> getHunts() {
+        return hunts;
     }
 
-    public void setHunt(Hunt hunt) {
-        this.hunt = hunt;
+    public void setHunts(List<Hunt> hunts) {
+        this.hunts = hunts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Client)) return false;
+        Client client = (Client) o;
+        return Objects.equals(id, client.id) &&
+            Objects.equals(name, client.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
 }

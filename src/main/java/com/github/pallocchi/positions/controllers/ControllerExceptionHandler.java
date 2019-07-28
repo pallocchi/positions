@@ -6,21 +6,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 /**
- * Handler to return a {@link HttpStatus#BAD_REQUEST} when a {@link ConstraintViolationException} occurs.
- *
- * <p>{@link ConstraintViolationException} is thrown when a bean validation fails.
- *
+ * Handler to return an specific {@link HttpStatus} when an exception occurs.
  */
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody ErrorMessage handleConstraintViolationException(ConstraintViolationException e) {
+    @ResponseBody ErrorMessage handle(ConstraintViolationException e) {
         return new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody ErrorMessage handle(EntityNotFoundException e) {
+        return new ErrorMessage(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
     /**
