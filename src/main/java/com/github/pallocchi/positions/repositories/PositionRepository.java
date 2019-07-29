@@ -1,14 +1,11 @@
 package com.github.pallocchi.positions.repositories;
 
 import com.github.pallocchi.positions.model.Position;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PositionRepository {
-
-    /**
-     * Saves position.
-     *
-     * @param position the position
-     */
-    void save(Position position);
+/**
+ * Repository for the {@link Position} entity.
+ */
+public interface PositionRepository extends PagingAndSortingRepository<Position, Integer> {
 
 }

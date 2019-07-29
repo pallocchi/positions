@@ -3,6 +3,7 @@ package com.github.pallocchi.positions.controllers;
 import com.github.pallocchi.positions.model.Position;
 import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.services.ImportService;
+import com.github.pallocchi.positions.services.PositionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,20 @@ public class PositionController {
 
     private final ImportService importService;
 
+    private final PositionService positionService;
+
     @Autowired
-    public PositionController(ImportService importService) {
+    public PositionController(ImportService importService, PositionService positionService) {
         this.importService = importService;
+        this.positionService = positionService;
     }
 
     @GetMapping(value = "/positions")
     @ApiOperation(value = "Retrieves the open positions available for logged client")
     public List<Position> getPositions() {
-        throw new UnsupportedOperationException();
+
+        //TODO: Use the logged client id
+        return positionService.search(1);
     }
 
     @PostMapping(value = "/positions")

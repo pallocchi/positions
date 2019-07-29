@@ -1,13 +1,18 @@
 package com.github.pallocchi.positions.model;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
+@Indexed
 @Table(name = "position")
 public class Position {
 
@@ -15,18 +20,26 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @Column(name = "external_id")
     private String externalId;
 
+    @Field
+    @NotNull
     @Column(name = "name")
     private String name;
 
+    @NotNull
     @Column(name = "company")
     private String company;
 
+    @Field
+    @NotNull
     @Column(name = "type")
     private String type;
 
+    @Field
+    @NotNull
     @Column(name = "location")
     private String location;
 
