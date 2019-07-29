@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,8 @@ import java.util.Objects;
 @Table(name = "provider")
 @ApiModel(description = "The owner of the open positions who provide us the data")
 public class Provider {
+
+    public enum Key { GITHUB }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,6 +43,11 @@ public class Provider {
     @Column(name = "url")
     @ApiModelProperty("The url to collect positions from")
     private String url;
+
+    @NotNull
+    @Enumerated
+    @Column(name = "key")
+    private Key key;
 
     public Integer getId() {
         return id;
@@ -73,6 +81,14 @@ public class Provider {
         this.url = url;
     }
 
+    public Key getKey() {
+        return key;
+    }
+
+    public void setKey(Key key) {
+        this.key = key;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,12 +97,13 @@ public class Provider {
         return Objects.equals(id, provider.id) &&
             Objects.equals(name, provider.name) &&
             Objects.equals(maxPositions, provider.maxPositions) &&
-            Objects.equals(url, provider.url);
+            Objects.equals(url, provider.url) &&
+            key == provider.key;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, maxPositions, url);
+        return Objects.hash(id, name, maxPositions, url, key);
     }
 
 }

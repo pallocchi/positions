@@ -20,11 +20,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,7 +117,6 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
-            .param("size", "101")
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
             .andExpect(status().is4xxClientError());
@@ -134,7 +134,23 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
-            .param("size", "101")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(om.writeValueAsString(provider)))
+            .andExpect(status().is4xxClientError());
+
+        verify(providerRepository, never()).save(any());
+    }
+
+    @Test
+    public void createProviderWithNullKeysShouldReturn4xx() throws Exception {
+
+        final Provider provider = newProvider();
+        provider.setKey(null);
+
+        when(providerRepository.save(provider)).thenReturn(provider);
+
+        mvc.perform(MockMvcRequestBuilders
+            .post("/providers")
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
             .andExpect(status().is4xxClientError());
@@ -163,6 +179,7 @@ public class ProviderControllerTest {
         provider.setMaxPositions(10);
         provider.setName("Github");
         provider.setUrl("https://jobs.github.com/positions.json");
+        provider.setKey(Provider.Key.GITHUB);
         return provider;
     }
 

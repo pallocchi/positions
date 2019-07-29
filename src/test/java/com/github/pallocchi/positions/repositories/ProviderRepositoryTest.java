@@ -31,6 +31,7 @@ public class ProviderRepositoryTest {
         provider.setMaxPositions(10);
         provider.setName("Github");
         provider.setUrl("https://jobs.github.com/positions.json");
+        provider.setKey(Provider.Key.GITHUB);
 
         final Provider persisted = repository.save(provider);
 
