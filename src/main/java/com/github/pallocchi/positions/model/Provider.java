@@ -25,7 +25,7 @@ public class Provider {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty("The provider id")
+    @ApiModelProperty(value = "The provider id", readOnly = true)
     private Integer id;
 
     @NotBlank

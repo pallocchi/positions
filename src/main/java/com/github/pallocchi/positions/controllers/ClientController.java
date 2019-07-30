@@ -86,7 +86,7 @@ public class ClientController {
         final Client client = clientRepository.findById(clientId).orElseThrow(EntityNotFoundException::new);
 
         hunt.setClient(client);
-        huntRepository.save(hunt);
+        huntRepository.create(hunt);
     }
 
     @PutMapping("/clients/{clientId}/hunts/{huntId}")

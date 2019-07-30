@@ -4,6 +4,8 @@ import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
 import com.github.pallocchi.positions.model.Position;
 import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.repositories.PositionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.Map;
  */
 @Service
 public class ImportService {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(ImportService.class);
 
     /**
      * {@link Provider.Key#name()} -> {@link ProviderService} implementation
@@ -43,6 +47,8 @@ public class ImportService {
 
         if (services.containsKey(providerKey.name())) {
 
+            LOGGER.info("Importing positions from {}", providerKey);
+
             final List<Position> positions = services.get(providerKey.name()).findOpenPositions();
 
             for (Position position : positions) {
@@ -53,6 +59,8 @@ public class ImportService {
                     repository.save(position);
                 }
             }
+
+            LOGGER.info("{} positions were imported", positions.size());
 
         } else {
 

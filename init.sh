@@ -34,7 +34,7 @@ curl -X POST "$BASE_PATH/clients/3/hunts" -H "Authorization: Bearer $TOKEN" -H '
 
 echo "> Adding hunts to providers..."
 
-curl -X POST "$BASE_PATH/providers" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"key": "GITHUB", "maxPositions": 100, "name": "Github", "url": "https://jobs.github.com/positions.json?page={page}"}'
+curl -X POST "$BASE_PATH/providers" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"key": "GITHUB", "maxPositions": 100, "name": "Github", "url": "https://jobs.github.com/positions.json?page={page}"}' && echo
 
 # Import positions from Github
 

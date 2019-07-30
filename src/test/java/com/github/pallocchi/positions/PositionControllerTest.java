@@ -123,7 +123,7 @@ public class PositionControllerTest {
     }
 
     @Test
-    public void importPositionsWithNonRegisteredKeyShouldReturn400() throws Exception {
+    public void importPositionsWithNonRegisteredKeyShouldReturn422() throws Exception {
 
         doThrow(new ProviderNotRegisteredException()).when(importService).execute(Provider.Key.GITHUB);
 
@@ -132,7 +132,7 @@ public class PositionControllerTest {
             .param("provider", "GITHUB")
             .header(HttpHeaders.AUTHORIZATION, adminAuthorization)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isUnprocessableEntity());
 
         verify(importService, times(1)).execute(any());
     }

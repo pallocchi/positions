@@ -1,14 +1,12 @@
 package com.github.pallocchi.positions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pallocchi.positions.config.JwtConfig;
 import com.github.pallocchi.positions.controllers.ClientController;
+import com.github.pallocchi.positions.exceptions.TooManyHuntsException;
 import com.github.pallocchi.positions.model.Client;
 import com.github.pallocchi.positions.model.Hunt;
 import com.github.pallocchi.positions.repositories.ClientRepository;
 import com.github.pallocchi.positions.repositories.HuntRepository;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +180,7 @@ public class ClientControllerTest {
             .content(om.writeValueAsString(hunt)))
             .andExpect(status().isOk());
 
-        verify(huntRepository, times(1)).save(hunt);
+        verify(huntRepository, times(1)).create(hunt);
         verify(clientRepository, times(1)).findById(client.getId());
     }
 
@@ -192,7 +190,6 @@ public class ClientControllerTest {
         final Hunt hunt = newHunt();
         hunt.setId(null);
 
-        when(huntRepository.save(hunt)).thenReturn(hunt);
         when(clientRepository.findById(1)).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders
@@ -202,7 +199,29 @@ public class ClientControllerTest {
             .content(om.writeValueAsString(hunt)))
             .andExpect(status().isNotFound());
 
-        verify(huntRepository, never()).save(hunt);
+        verify(huntRepository, never()).create(hunt);
+        verify(clientRepository, times(1)).findById(1);
+    }
+
+    @Test
+    public void createHuntWithClientWithOneHuntShouldReturn422() throws Exception {
+
+        final Hunt hunt = newHunt();
+        hunt.setId(null);
+
+        final Client client = newClient();
+
+        when(huntRepository.create(hunt)).thenThrow(new TooManyHuntsException());
+        when(clientRepository.findById(1)).thenReturn(Optional.of(client));
+
+        mvc.perform(MockMvcRequestBuilders
+            .post("/clients/1/hunts")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(om.writeValueAsString(hunt)))
+            .andExpect(status().isUnprocessableEntity());
+
+        verify(huntRepository, times(1)).create(hunt);
         verify(clientRepository, times(1)).findById(1);
     }
 

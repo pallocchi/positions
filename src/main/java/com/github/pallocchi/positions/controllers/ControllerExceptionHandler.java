@@ -1,7 +1,7 @@
 package com.github.pallocchi.positions.controllers;
 
 import com.github.pallocchi.positions.exceptions.NonAvailableHuntException;
-import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
+import com.github.pallocchi.positions.exceptions.UnprocessableEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,15 +18,21 @@ import javax.validation.ConstraintViolationException;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ResponseBody ErrorMessage handle(ConstraintViolationException e) {
-        return new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
+        return new ErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
 
-    @ExceptionHandler(ProviderNotRegisteredException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody ErrorMessage handle(ProviderNotRegisteredException e) {
-        return new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
+    @ExceptionHandler(org.hibernate.exception.ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseBody ErrorMessage handle(org.hibernate.exception.ConstraintViolationException e) {
+        return new ErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase());
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseBody ErrorMessage handle(UnprocessableEntityException e) {
+        return new ErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

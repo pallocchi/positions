@@ -19,7 +19,7 @@ A security role `admin` is available to perform write operations, such creating 
 
 2. Run the application
 
-    `java -jar positions-1.0-SNAPSHOT.jar`
+    `java -jar target/positions-1.0-SNAPSHOT.jar`
 
 3. Import the data for test
 

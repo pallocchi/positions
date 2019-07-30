@@ -3,6 +3,7 @@ package com.github.pallocchi.positions.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty.AccessMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,11 +23,11 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty("The client id")
+    @ApiModelProperty(value = "The client id", readOnly = true)
     private Integer id;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @ApiModelProperty("The client name")
     private String name;
 

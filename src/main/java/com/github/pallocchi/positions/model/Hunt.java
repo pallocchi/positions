@@ -21,7 +21,7 @@ public class Hunt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty("The hunt id")
+    @ApiModelProperty(value = "The hunt id", readOnly = true)
     private Integer id;
 
     @Column(name = "type")
