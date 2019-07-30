@@ -1,19 +1,24 @@
 package com.github.pallocchi.positions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pallocchi.positions.config.JwtConfig;
 import com.github.pallocchi.positions.controllers.ClientController;
 import com.github.pallocchi.positions.model.Client;
 import com.github.pallocchi.positions.model.Hunt;
 import com.github.pallocchi.positions.repositories.ClientRepository;
 import com.github.pallocchi.positions.repositories.HuntRepository;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ClientController.class)
 public class ClientControllerTest {
 
+    @Value("${test.authorization.admin}")
+    private String authorization;
+
     @Autowired
     private MockMvc mvc;
 
@@ -50,7 +58,7 @@ public class ClientControllerTest {
     private HuntRepository huntRepository;
 
     @Test
-    public void getClientsShouldReturn2xx() throws Exception {
+    public void getClientsShouldReturn200() throws Exception {
 
         final Client client = newClient();
 
@@ -60,6 +68,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .get("/clients")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
@@ -71,19 +80,20 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void getClientsWithBigSizeShouldReturn4xx() throws Exception {
+    public void getClientsWithBigSizeShouldReturn400() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/clients")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .param("size", "101")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(clientRepository, never()).findAll();
     }
 
     @Test
-    public void createClientShouldReturn2xx() throws Exception {
+    public void createClientShouldReturn200() throws Exception {
 
         final Client client = newClient();
         client.setId(null);
@@ -92,6 +102,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/clients")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(client)))
             .andExpect(status().isOk());
@@ -100,22 +111,23 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void createClientWithNullNameShouldReturn4xx() throws Exception {
+    public void createClientWithNullNameShouldReturn400() throws Exception {
 
         final Client client = newClient();
         client.setName(null);
 
         mvc.perform(MockMvcRequestBuilders
             .post("/clients")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(client)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(clientRepository, never()).save(any());
     }
 
     @Test
-    public void updateClientShouldReturn2xx() throws Exception {
+    public void updateClientShouldReturn200() throws Exception {
 
         final Client client = newClient();
 
@@ -123,6 +135,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .put("/clients/1")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(client)))
             .andExpect(status().isOk());
@@ -131,7 +144,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void getHuntsShouldReturn2xx() throws Exception {
+    public void getHuntsShouldReturn200() throws Exception {
 
         final Hunt hunt = newHunt();
 
@@ -139,6 +152,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .get("/clients/1/hunts")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
@@ -151,7 +165,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void createHuntShouldReturn2xx() throws Exception {
+    public void createHuntShouldReturn200() throws Exception {
 
         final Hunt hunt = newHunt();
         hunt.setId(null);
@@ -163,6 +177,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/clients/1/hunts")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(hunt)))
             .andExpect(status().isOk());
@@ -172,7 +187,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void createHuntWithInvalidClientShouldReturn4xx() throws Exception {
+    public void createHuntWithInvalidClientShouldReturn404() throws Exception {
 
         final Hunt hunt = newHunt();
         hunt.setId(null);
@@ -182,16 +197,17 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/clients/1/hunts")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(hunt)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isNotFound());
 
         verify(huntRepository, never()).save(hunt);
         verify(clientRepository, times(1)).findById(1);
     }
 
     @Test
-    public void updateHuntShouldReturn2xx() throws Exception {
+    public void updateHuntShouldReturn200() throws Exception {
 
         final Hunt hunt = newHunt();
 
@@ -199,6 +215,7 @@ public class ClientControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .put("/clients/1/hunts/1")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(hunt)))
             .andExpect(status().isOk());

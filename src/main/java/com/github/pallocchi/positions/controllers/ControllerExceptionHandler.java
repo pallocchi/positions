@@ -1,7 +1,7 @@
 package com.github.pallocchi.positions.controllers;
 
 import com.github.pallocchi.positions.exceptions.NonAvailableHuntException;
-import com.github.pallocchi.positions.exceptions.ProviderNotFoundException;
+import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,10 +23,10 @@ public class ControllerExceptionHandler {
         return new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(ProviderNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody ErrorMessage handle(ProviderNotFoundException e) {
-        return new ErrorMessage(HttpStatus.NOT_FOUND, e.getMessage());
+    @ExceptionHandler(ProviderNotRegisteredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody ErrorMessage handle(ProviderNotRegisteredException e) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

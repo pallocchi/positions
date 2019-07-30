@@ -1,6 +1,6 @@
 package com.github.pallocchi.positions.services;
 
-import com.github.pallocchi.positions.exceptions.ProviderNotFoundException;
+import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
 import com.github.pallocchi.positions.model.Position;
 import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.repositories.ProviderRepository;
@@ -39,7 +39,7 @@ class GithubProviderService implements ProviderService {
         // from the database on each execution, getting the updated parameters.
 
         final Provider provider = repository.findByKey(Provider.Key.GITHUB)
-            .orElseThrow(ProviderNotFoundException::new);
+            .orElseThrow(ProviderNotRegisteredException::new);
 
         final String url = provider.getUrl();
 

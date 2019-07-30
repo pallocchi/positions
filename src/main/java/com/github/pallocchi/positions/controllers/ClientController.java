@@ -93,6 +93,7 @@ public class ClientController {
     @ApiOperation(value = "Updates an existing hunt of given client",
         authorizations = {@Authorization(AUTHORIZATION)})
     public void updateHunt(
+        @PathVariable(value = "clientId") int clientId,
         @PathVariable(value = "huntId") int huntId,
         @RequestBody Hunt hunt) {
 

@@ -19,9 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -43,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String header = request.getHeader(config.getHeader());
 
-        if(header != null && header.startsWith(config.getPrefix())) {
+        if (header != null && header.startsWith(config.getPrefix())) {
 
             // Get the token from header
             final String token = header.replace(config.getPrefix(), "");

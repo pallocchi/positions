@@ -1,6 +1,6 @@
 package com.github.pallocchi.positions.services;
 
-import com.github.pallocchi.positions.exceptions.ProviderNotFoundException;
+import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
 import com.github.pallocchi.positions.model.Position;
 import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.repositories.PositionRepository;
@@ -52,7 +52,7 @@ public class ImportService {
 
         } else {
 
-            throw new ProviderNotFoundException();
+            throw new ProviderNotRegisteredException();
         }
     }
 

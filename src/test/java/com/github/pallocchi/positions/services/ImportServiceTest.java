@@ -1,6 +1,6 @@
 package com.github.pallocchi.positions.services;
 
-import com.github.pallocchi.positions.exceptions.ProviderNotFoundException;
+import com.github.pallocchi.positions.exceptions.ProviderNotRegisteredException;
 import com.github.pallocchi.positions.model.Position;
 import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.repositories.PositionRepository;
@@ -40,7 +40,7 @@ public class ImportServiceTest {
         verify(repository, times(1)).save(position);
     }
 
-    @Test(expected = ProviderNotFoundException.class)
+    @Test(expected = ProviderNotRegisteredException.class)
     public void importWithNonRegisteredProviderShouldFail() {
 
         final Map<String, ProviderService> services = ImmutableMap.of();

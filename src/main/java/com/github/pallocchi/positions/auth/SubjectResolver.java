@@ -41,7 +41,7 @@ public class SubjectResolver implements HandlerMethodArgumentResolver {
      * @param type the target type
      * @return the principal as the target type
      */
-    private static Object asParameterType(String principal, Class<?> type) {
+    static Object asParameterType(String principal, Class<?> type) {
 
         if (ClassUtils.isAssignable(String.class, type)) {
             return principal;

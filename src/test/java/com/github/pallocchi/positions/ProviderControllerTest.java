@@ -7,11 +7,13 @@ import com.github.pallocchi.positions.repositories.ProviderRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProviderController.class)
 public class ProviderControllerTest {
 
+    @Value("${test.authorization.admin}")
+    private String authorization;
+
     @Autowired
     private MockMvc mvc;
 
@@ -43,7 +48,7 @@ public class ProviderControllerTest {
     private ProviderRepository providerRepository;
 
     @Test
-    public void getProvidersShouldReturn2xx() throws Exception {
+    public void getProvidersShouldReturn200() throws Exception {
 
         final Provider provider = newProvider();
 
@@ -53,6 +58,7 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .get("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
@@ -66,19 +72,20 @@ public class ProviderControllerTest {
     }
 
     @Test
-    public void getProvidersWithBigSizeShouldReturn4xx() throws Exception {
+    public void getProvidersWithBigSizeShouldReturn400() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .param("size", "101")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(providerRepository, never()).findAll();
     }
 
     @Test
-    public void createProviderShouldReturn2xx() throws Exception {
+    public void createProviderShouldReturn200() throws Exception {
 
         final Provider provider = newProvider();
         provider.setId(null);
@@ -87,6 +94,7 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
             .andExpect(status().isOk());
@@ -95,37 +103,39 @@ public class ProviderControllerTest {
     }
 
     @Test
-    public void createProviderWithNullNameShouldReturn4xx() throws Exception {
+    public void createProviderWithNullNameShouldReturn400() throws Exception {
 
         final Provider provider = newProvider();
         provider.setName(null);
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(providerRepository, never()).save(any());
     }
 
     @Test
-    public void createProviderWithNullUrlShouldReturn4xx() throws Exception {
+    public void createProviderWithNullUrlShouldReturn400() throws Exception {
 
         final Provider provider = newProvider();
         provider.setUrl(null);
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(providerRepository, never()).save(any());
     }
 
     @Test
-    public void createProviderWithNullMaxPositionsShouldReturn4xx() throws Exception {
+    public void createProviderWithNullMaxPositionsShouldReturn400() throws Exception {
 
         final Provider provider = newProvider();
         provider.setMaxPositions(null);
@@ -134,15 +144,16 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(providerRepository, never()).save(any());
     }
 
     @Test
-    public void createProviderWithNullKeysShouldReturn4xx() throws Exception {
+    public void createProviderWithNullKeysShouldReturn400() throws Exception {
 
         final Provider provider = newProvider();
         provider.setKey(null);
@@ -151,20 +162,22 @@ public class ProviderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders
             .post("/providers")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isBadRequest());
 
         verify(providerRepository, never()).save(any());
     }
 
     @Test
-    public void updateProviderShouldReturn2xx() throws Exception {
+    public void updateProviderShouldReturn200() throws Exception {
 
         final Provider provider = newProvider();
 
         mvc.perform(MockMvcRequestBuilders
             .put("/providers/1")
+            .header(HttpHeaders.AUTHORIZATION, authorization)
             .contentType(MediaType.APPLICATION_JSON)
             .content(om.writeValueAsString(provider)))
             .andExpect(status().isOk());
