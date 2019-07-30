@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,8 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * Filter to validate JWT tokens, and if they are valid, register the subject in security context.
@@ -56,9 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if(username != null) {
 
+                    // Get the authority from token
+                    final String role = (String) claims.get("role");
+                    final GrantedAuthority authority = new SimpleGrantedAuthority(role);
+
                     // Create the authentication, which does not have credentials
                     // since we haven't implemented a users module yet
-                    final Authentication auth = new UsernamePasswordAuthenticationToken(username, null, emptyList());
+                    final Authentication auth =
+                        new UsernamePasswordAuthenticationToken(username, null, singletonList(authority));
 
                     // Now, user is authenticated
                     SecurityContextHolder.getContext().setAuthentication(auth);

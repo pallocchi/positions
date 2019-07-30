@@ -3,6 +3,7 @@ package com.github.pallocchi.positions.config;
 import com.github.pallocchi.positions.auth.JwtAuthenticationFilter;
 import com.github.pallocchi.positions.config.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,9 +27,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .addFilterAfter(new JwtAuthenticationFilter(config), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/clients*").authenticated()
-            .antMatchers("/providers*").authenticated()
-            .antMatchers("/positions*").authenticated()
+            .antMatchers("/clients*").hasRole("ADMIN")
+            .antMatchers("/providers*").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/positions*").hasRole("CLIENT")
+            .antMatchers(HttpMethod.POST, "/positions*").hasRole("ADMIN")
             .anyRequest().permitAll();
     }
 
