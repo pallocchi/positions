@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiUk9MRV9BRE1JTiJ9.To_j8Lt2Ks7eYOeXooxzaagVZ1mtk-KgmRgMmjxzp_0
+TOKEN=$1
 
 BASE_PATH='http://localhost:8080'
 
