@@ -57,3 +57,4 @@ A security role `admin` is available to perform write operations, such creating 
 * Support users & OAuth.
 * Use a search engine like Solr or Elasticsearch instead of Lucene.
 * Use a database like MySQL or PostgreSQL instead of H2.
+* Import positions using a task in an executor
