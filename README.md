@@ -1,3 +1,9 @@
+![][travis]
+![][codecov]
+
+[travis]:https://travis-ci.org/pallocchi/positions.svg?branch=master
+[codecov]:https://codecov.io/gh/pallocchi/positions/branch/master/graph/badge.svg
+
 # Positions
 
 Import open positions from third-party APIs and perform searches over the data.
