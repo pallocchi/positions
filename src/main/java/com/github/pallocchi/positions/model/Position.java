@@ -21,7 +21,7 @@ public class Position {
     private Long id;
 
     @NotNull
-    @Column(name = "external_id")
+    @Column(name = "external_id", unique = true)
     private String externalId;
 
     @Field

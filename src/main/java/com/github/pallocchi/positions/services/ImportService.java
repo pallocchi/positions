@@ -47,7 +47,11 @@ public class ImportService {
 
             for (Position position : positions) {
 
-                repository.save(position);
+                final boolean notExists = !repository.existsByExternalId(position.getExternalId());
+
+                if (notExists) {
+                    repository.save(position);
+                }
             }
 
         } else {

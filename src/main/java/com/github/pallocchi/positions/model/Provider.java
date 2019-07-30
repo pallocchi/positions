@@ -46,7 +46,7 @@ public class Provider {
 
     @NotNull
     @Enumerated
-    @Column(name = "key")
+    @Column(name = "key", unique = true)
     private Key key;
 
     public Integer getId() {

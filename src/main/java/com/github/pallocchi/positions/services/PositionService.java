@@ -113,11 +113,12 @@ public class PositionService {
      * @param value the value to match
      * @return the query
      */
-    private static Query match(QueryBuilder builder, String field, Object value) {
+    private static Query match(QueryBuilder builder, String field, String value) {
 
-        return builder.keyword()
+        return builder
+            .phrase()
             .onField(field)
-            .matching(value)
+            .sentence(value)
             .createQuery();
     }
 
