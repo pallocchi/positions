@@ -6,6 +6,7 @@ import com.github.pallocchi.positions.repositories.ClientRepository;
 import com.github.pallocchi.positions.repositories.HuntRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+import static com.github.pallocchi.positions.config.SwaggerConfig.AUTHORIZATION;
+
 @RestController
 @Api(tags = {"Clients"})
 public class ClientController {
@@ -36,7 +39,8 @@ public class ClientController {
     }
 
     @GetMapping("/clients")
-    @ApiOperation(value = "Retrieves all the clients which do the hunting")
+    @ApiOperation(value = "Retrieves all the clients which do the hunting",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public List<Client> getClients(
         @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
         @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(100) int size) {
@@ -45,7 +49,8 @@ public class ClientController {
     }
 
     @PostMapping("/clients")
-    @ApiOperation(value = "Creates a new client which does the hunting")
+    @ApiOperation(value = "Creates a new client which does the hunting",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void createClient(
         @RequestBody @Valid Client client) {
 
@@ -53,7 +58,8 @@ public class ClientController {
     }
 
     @PutMapping("/clients/{clientId}")
-    @ApiOperation(value = "Updates an existing client which does the hunting")
+    @ApiOperation(value = "Updates an existing client which does the hunting",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void updateClient(
         @PathVariable(value = "clientId") int clientId,
         @RequestBody Client client) {
@@ -62,7 +68,8 @@ public class ClientController {
     }
 
     @GetMapping("/clients/{clientId}/hunts")
-    @ApiOperation(value = "Retrieves available hunts for given client")
+    @ApiOperation(value = "Retrieves available hunts for given client",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public List<Hunt> getHunts(
         @PathVariable(value = "clientId") int clientId) {
 
@@ -70,7 +77,8 @@ public class ClientController {
     }
 
     @PostMapping("/clients/{clientId}/hunts")
-    @ApiOperation(value = "Creates a new hunt for given client")
+    @ApiOperation(value = "Creates a new hunt for given client",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void createHunt(
         @PathVariable(value = "clientId") int clientId,
         @RequestBody Hunt hunt) {
@@ -82,7 +90,8 @@ public class ClientController {
     }
 
     @PutMapping("/clients/{clientId}/hunts/{huntId}")
-    @ApiOperation(value = "Updates an existing hunt of given client")
+    @ApiOperation(value = "Updates an existing hunt of given client",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void updateHunt(
         @PathVariable(value = "huntId") int huntId,
         @RequestBody Hunt hunt) {

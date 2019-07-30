@@ -4,6 +4,7 @@ import com.github.pallocchi.positions.model.Provider;
 import com.github.pallocchi.positions.repositories.ProviderRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+import static com.github.pallocchi.positions.config.SwaggerConfig.AUTHORIZATION;
+
 @Validated
 @RestController
 @Api(tags = {"Providers"})
@@ -33,7 +36,8 @@ public class ProviderController {
     }
 
     @GetMapping("/providers")
-    @ApiOperation(value = "Retrieves all the providers of positions")
+    @ApiOperation(value = "Retrieves all the providers of positions",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public List<Provider> getProviders(
         @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
         @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(100) int size) {
@@ -42,7 +46,8 @@ public class ProviderController {
     }
 
     @PostMapping("/providers")
-    @ApiOperation(value = "Creates a new provider of positions")
+    @ApiOperation(value = "Creates a new provider of positions",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void createProvider(
         @RequestBody @Valid Provider provider) {
 
@@ -50,7 +55,8 @@ public class ProviderController {
     }
 
     @PutMapping("/providers/{id}")
-    @ApiOperation(value = "Updates an existing provider of positions")
+    @ApiOperation(value = "Updates an existing provider of positions",
+        authorizations = {@Authorization(AUTHORIZATION)})
     public void updateProvider(
         @PathVariable(value = "id") int id,
         @RequestBody Provider provider) {
